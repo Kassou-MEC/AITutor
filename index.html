@@ -33,6 +33,7 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
+  body.modal-open { overflow: hidden; }
   a { color: inherit; }
   button { font-family: inherit; cursor: pointer; }
   h1, h2, h3 { margin: 0; line-height: 1.2; letter-spacing: -0.01em; }
@@ -100,6 +101,7 @@
     border: 2px solid transparent;
     transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
     min-height: 48px;
+    background: none;
   }
   .btn:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
   .btn-primary { background: #fff; color: var(--maroon); }
@@ -110,6 +112,16 @@
   .btn-yellow:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
   .btn-white { background: #fff; color: var(--maroon); }
   .btn-white:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-demo {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    border-color: rgba(255,255,255,.4);
+  }
+  .btn-demo:hover { background: rgba(255,255,255,.2); }
+  .btn-demo .play-icon {
+    margin-right: 8px;
+    font-size: 12px;
+  }
 
   /* ---------- Section base ---------- */
   section.block { padding: 72px 0; }
@@ -223,6 +235,58 @@
   }
   footer p + p { margin-top: 4px; }
 
+  /* ---------- Video Modal ---------- */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal.open { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    background: #000;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal-content video {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+    transition: background 0.15s ease;
+  }
+  .modal-close:hover { background: rgba(0,0,0,0.85); }
+  .modal-close:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
     .hero { padding: 64px 0 72px; }
@@ -234,6 +298,7 @@
     .action-card h3 { font-size: 22px; }
     .hours-row { flex-direction: column; align-items: flex-start; gap: 4px; }
     .hours-day { min-width: 0; }
+    .modal { padding: 12px; }
   }
   @media (max-width: 420px) {
     .brand-name { font-size: 15px; }
@@ -273,6 +338,9 @@
     <div class="hero-cta">
       <a id="hero-signin" class="btn btn-primary" href="#" rel="noopener">Sign in &rarr;</a>
       <a id="hero-tutor" class="btn btn-ghost" href="#" rel="noopener">Open the AI tutor</a>
+      <button id="hero-demo" class="btn btn-demo" type="button" aria-label="Watch demo video">
+        <span class="play-icon" aria-hidden="true">&#9654;</span> Demo
+      </button>
     </div>
   </div>
 </section>
@@ -355,8 +423,7 @@
 <!-- =========================================================
      MATH LAB HOURS
      NOTE TO FACULTY: update the three rows below to reflect
-     current Math Lab hours each term. Also update the
-     "Recommended" badge if a different day should be flagged.
+     current Math Lab hours each term.
      ========================================================= -->
 <section id="hours" class="block" aria-labelledby="hours-title">
   <div class="wrap">
@@ -390,6 +457,23 @@
     <p id="footer-pilot">AI Math Tutor Pilot &middot; Summer 2026</p>
   </div>
 </footer>
+
+<!-- =========================================================
+     VIDEO MODAL — opens when Demo button is clicked
+     NOTE TO FACULTY: replace AITutorU.mov with a new file
+     name if the video is updated. Keep the file in the same
+     folder as index.html.
+     ========================================================= -->
+<div id="video-modal" class="modal" role="dialog" aria-modal="true" aria-label="Demo video">
+  <div class="modal-content">
+    <button id="modal-close" class="modal-close" type="button" aria-label="Close demo video">&times;</button>
+    <video id="demo-video" controls playsinline preload="metadata">
+      <source src="AITutorU.mov" type="video/quicktime">
+      <source src="AITutorU.mov" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
 
 <script>
   /* =========================================================
@@ -432,6 +516,45 @@
     if (pilot && CONFIG.PILOT_TERM) {
       pilot.textContent = "AI Math Tutor Pilot · " + CONFIG.PILOT_TERM;
     }
+  })();
+
+  /* =========================================================
+     VIDEO MODAL — open/close behavior
+     ========================================================= */
+  (function videoModal() {
+    const modal = document.getElementById("video-modal");
+    const openBtn = document.getElementById("hero-demo");
+    const closeBtn = document.getElementById("modal-close");
+    const video = document.getElementById("demo-video");
+
+    function openModal() {
+      modal.classList.add("open");
+      document.body.classList.add("modal-open");
+      // small delay so video element is fully visible before play()
+      setTimeout(function () { video.play().catch(function () {}); }, 50);
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    if (openBtn) openBtn.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+
+    // Close when clicking outside the video
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal.classList.contains("open")) {
+        closeModal();
+      }
+    });
   })();
 </script>
 
