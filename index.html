@@ -196,6 +196,50 @@
   .info-card h3 { font-size: 18px; margin-bottom: 6px; color: var(--text); }
   .info-card p { color: var(--muted); font-size: 15px; }
 
+  /* ---------- About section ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .about-text {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .about-text p + p { margin-top: 12px; }
+  .about-text strong { color: var(--text); font-weight: 600; }
+  .about-meta {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--maroon);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .about-meta h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--maroon);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .meta-row {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    gap: 12px;
+  }
+  .meta-row:last-child { border-bottom: 0; }
+  .meta-label {
+    color: var(--muted);
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+  .meta-value { color: var(--text); }
+
   /* ---------- Hours ---------- */
   .hours-card {
     background: var(--card);
@@ -234,6 +278,8 @@
     font-size: 14px;
   }
   footer p + p { margin-top: 4px; }
+  footer a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
+  footer a:hover { border-bottom-color: var(--maroon); }
 
   /* ---------- Video Modal ---------- */
   .modal {
@@ -291,7 +337,7 @@
   @media (max-width: 768px) {
     .hero { padding: 64px 0 72px; }
     section.block { padding: 56px 0; }
-    .steps, .actions, .info-grid { grid-template-columns: 1fr; }
+    .steps, .actions, .info-grid, .about-grid { grid-template-columns: 1fr; }
     .nav-links { gap: 18px; }
     .nav-links a { font-size: 14px; }
     .action-card { padding: 28px; min-height: 180px; }
@@ -299,6 +345,8 @@
     .hours-row { flex-direction: column; align-items: flex-start; gap: 4px; }
     .hours-day { min-width: 0; }
     .modal { padding: 12px; }
+    .meta-row { flex-direction: column; gap: 2px; }
+    .meta-label { min-width: 0; }
   }
   @media (max-width: 420px) {
     .brand-name { font-size: 15px; }
@@ -421,6 +469,71 @@
 </section>
 
 <!-- =========================================================
+     ABOUT THE PILOT — for faculty, administrators, visitors
+     ========================================================= -->
+<section id="about" class="block" aria-labelledby="about-title">
+  <div class="wrap">
+    <h2 id="about-title" class="section-title">About this pilot</h2>
+    <p class="section-sub">A teaching tool, not an answer machine.</p>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          The <strong>MEC AI Math Tutor</strong> is a Socratic tutoring assistant
+          built for students in the MEC Math Lab at LaGuardia Community College.
+          Instead of providing final answers, it asks guiding questions that help
+          students work through problems on their own &mdash; the same way a skilled
+          human tutor would.
+        </p>
+        <p>
+          The tutor is designed to <strong>complement, not replace</strong>, the
+          human tutors in the lab. It helps students get unstuck on conceptual
+          questions while preserving tutor capacity for the more complex,
+          one-on-one work where humans are essential. It refuses to engage
+          with graded assignments and redirects students to human tutors for
+          those situations.
+        </p>
+        <p>
+          Built entirely on LaGuardia&rsquo;s existing
+          <strong>Microsoft 365 / CUNY environment</strong>, the pilot uses
+          Microsoft Copilot, Microsoft Forms, and SharePoint &mdash; with no new
+          vendor cost, no third-party data sharing, and full alignment with
+          CUNY&rsquo;s FERPA boundary.
+        </p>
+      </div>
+
+      <aside class="about-meta" aria-label="Pilot details">
+        <h3>Pilot details</h3>
+        <div class="meta-row">
+          <div class="meta-label">Department</div>
+          <div class="meta-value">Mathematics, Engineering &amp; Computer Science</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Institution</div>
+          <div class="meta-value">LaGuardia Community College, CUNY</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Pilot phase</div>
+          <div class="meta-value" id="meta-pilot">Summer 2026</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Built on</div>
+          <div class="meta-value">Microsoft 365 (CUNY tenant)</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Access</div>
+          <div class="meta-value">CUNY single sign-on</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Data</div>
+          <div class="meta-value">No conversation content stored</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
      MATH LAB HOURS
      NOTE TO FACULTY: update the three rows below to reflect
      current Math Lab hours each term.
@@ -451,10 +564,11 @@
 <!-- =========================================================
      FOOTER
      ========================================================= -->
-<footer id="about">
+<footer>
   <div class="wrap">
     <p>MEC Department &middot; LaGuardia Community College</p>
     <p id="footer-pilot">AI Math Tutor Pilot &middot; Summer 2026</p>
+    <p>Questions or feedback? Contact <a href="mailto:kkassou@lagcc.cuny.edu">Khalid Kassou</a></p>
   </div>
 </footer>
 
@@ -515,6 +629,11 @@
     const pilot = document.getElementById("footer-pilot");
     if (pilot && CONFIG.PILOT_TERM) {
       pilot.textContent = "AI Math Tutor Pilot · " + CONFIG.PILOT_TERM;
+    }
+
+    const metaPilot = document.getElementById("meta-pilot");
+    if (metaPilot && CONFIG.PILOT_TERM) {
+      metaPilot.textContent = CONFIG.PILOT_TERM;
     }
   })();
 
